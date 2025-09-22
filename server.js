@@ -48,21 +48,8 @@ app.use('/api/upload', require('./src/route/uploadRoutes'));
 // Root route
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'Anvi Showroom API', 
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      products: '/api/products',
-      cart: '/api/cart',
-      orders: '/api/orders',
-      contact: '/api/contact',
-      categories: '/api/categories',
-      search: '/api/search',
-      admin: '/api/admin',
-      reviews: '/api/reviews',
-      catalogue: '/api/catalogue',
-      upload: '/api/upload'
-    }
+    message: 'Anvi Showroom API is running',
+    status: 'OK'
   });
 });
 
