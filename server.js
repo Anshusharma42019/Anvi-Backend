@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -38,6 +38,55 @@ app.use('/api/reviews', require('./src/route/reviewRoutes'));
 app.use('/api/catalogue', require('./src/route/catalogueRoutes'));
 app.use('/api/upload', require('./src/route/uploadRoutes'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Anvi Showroom API', 
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      products: '/api/products',
+      cart: '/api/cart',
+      orders: '/api/orders',
+      contact: '/api/contact',
+      categories: '/api/categories',
+      search: '/api/search',
+      admin: '/api/admin',
+      reviews: '/api/reviews',
+      catalogue: '/api/catalogue',
+      upload: '/api/upload'
+    }
+  });
+});
+
+// Basic product redirect
+app.get('/product', (req, res) => {
+  res.redirect('/api/products');
+});
+
+// API documentation
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Anvi Showroom API Documentation',
+    version: '1.0.0',
+    endpoints: {
+      'GET /': 'API information',
+      'GET /api/health': 'Health check',
+      'GET /api/products': 'Get all products',
+      'POST /api/products': 'Create product',
+      'GET /api/cart': 'Get cart items',
+      'POST /api/cart': 'Add to cart',
+      'GET /api/orders': 'Get orders',
+      'POST /api/orders': 'Create order',
+      'POST /api/contact': 'Submit contact form',
+      'GET /api/categories': 'Get categories',
+      'GET /api/search': 'Search products',
+      'GET /api/reviews': 'Get reviews',
+      'GET /api/catalogue': 'Get catalogue'
+    }
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Anvi Showroom API is running' });
@@ -54,6 +103,10 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
