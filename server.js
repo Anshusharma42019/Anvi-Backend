@@ -54,8 +54,15 @@ try {
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Anvi Showroom API is running',
-    status: 'OK'
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV || 'development'
   });
+});
+
+// Simple test endpoint
+app.get('/test', (req, res) => {
+  res.json({ message: 'Test endpoint working' });
 });
 
 // Basic product redirect
@@ -101,10 +108,6 @@ app.use((err, req, res, next) => {
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
