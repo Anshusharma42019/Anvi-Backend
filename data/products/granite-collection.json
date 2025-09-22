@@ -1,0 +1,22 @@
+{
+  "folderId": "granite-collection",
+  "folderName": "Granite Collection", 
+  "products": [
+    {
+      "id": "granite-001",
+      "name": "Black Galaxy Granite",
+      "description": "Premium black granite with golden speckles",
+      "category": "Granite",
+      "price": 120,
+      "size": "60x60",
+      "thickness": "15mm",
+      "finish": "Polished",
+      "features": ["Durable", "Heat resistant", "Scratch resistant"],
+      "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
+      "inStock": true,
+      "stockQuantity": 150,
+      "rating": 4.7,
+      "reviews": 28
+    }
+  ]
+}

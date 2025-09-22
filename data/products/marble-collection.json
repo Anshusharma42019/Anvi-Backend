@@ -1,0 +1,38 @@
+{
+  "folderId": "marble-collection",
+  "folderName": "Marble Collection",
+  "products": [
+    {
+      "id": "marble-001",
+      "name": "Carrara White Marble",
+      "description": "Premium Italian Carrara marble with elegant white veining",
+      "category": "Marble",
+      "price": 150,
+      "size": "60x60",
+      "thickness": "10mm",
+      "finish": "Polished",
+      "features": ["Natural veining", "Slip resistant", "Easy maintenance"],
+      "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
+      "inStock": true,
+      "stockQuantity": 100,
+      "rating": 4.8,
+      "reviews": 45
+    },
+    {
+      "id": "marble-002", 
+      "name": "Calacatta Gold Marble",
+      "description": "Luxurious Calacatta marble with golden veining",
+      "category": "Marble",
+      "price": 200,
+      "size": "60x120",
+      "thickness": "12mm",
+      "finish": "Honed",
+      "features": ["Gold veining", "Premium quality", "Unique patterns"],
+      "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
+      "inStock": true,
+      "stockQuantity": 75,
+      "rating": 4.9,
+      "reviews": 32
+    }
+  ]
+}
