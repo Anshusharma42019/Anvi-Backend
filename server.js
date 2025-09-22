@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -35,16 +34,21 @@ db.once('open', () => {
 });
 
 // Routes
-app.use('/api/products', require('./src/route/productRoutes'));
-app.use('/api/cart', require('./src/route/cartRoutes'));
-app.use('/api/orders', require('./src/route/orderRoutes'));
-app.use('/api/contact', require('./src/route/contactRoutes'));
-app.use('/api/categories', require('./src/route/categoryRoutes'));
-app.use('/api/search', require('./src/route/searchRoutes'));
-app.use('/api/admin', require('./src/route/adminRoutes'));
-app.use('/api/reviews', require('./src/route/reviewRoutes'));
-app.use('/api/catalogue', require('./src/route/catalogueRoutes'));
-app.use('/api/upload', require('./src/route/uploadRoutes'));
+try {
+  app.use('/api/products', require('./src/route/productRoutes'));
+  app.use('/api/cart', require('./src/route/cartRoutes'));
+  app.use('/api/orders', require('./src/route/orderRoutes'));
+  app.use('/api/contact', require('./src/route/contactRoutes'));
+  app.use('/api/categories', require('./src/route/categoryRoutes'));
+  app.use('/api/search', require('./src/route/searchRoutes'));
+  app.use('/api/admin', require('./src/route/adminRoutes'));
+  app.use('/api/reviews', require('./src/route/reviewRoutes'));
+  app.use('/api/catalogue', require('./src/route/catalogueRoutes'));
+  app.use('/api/upload', require('./src/route/uploadRoutes'));
+  console.log('Routes loaded successfully');
+} catch (error) {
+  console.error('Error loading routes:', error);
+}
 
 // Root route
 app.get('/', (req, res) => {
@@ -82,6 +86,7 @@ app.get('/api', (req, res) => {
   });
 });
 
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Anvi Showroom API is running' });
@@ -98,10 +103,8 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;
