@@ -8,9 +8,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
   origin: [
-    "https://anvi-frontend-delta.vercel.app",
+    "https://anvi-frontend-ne9l.vercel.app",
     "http://localhost:5173",
-    "https://anvi-backend-v77n.vercel.app",
+    
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   credentials: true
