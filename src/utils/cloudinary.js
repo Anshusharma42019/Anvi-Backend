@@ -3,9 +3,9 @@ import cloudinary from "cloudinary";
 import fs from "fs";
 
 cloudinary.v2.config({
-  cloud_name: "dr7thzxwl",
-  api_key: "756574152586552",
-  api_secret: "y235v56HWXHd-V5102B7RKcST7g",
+  cloud_name: "dgibkaebk",
+  api_key: "436467411714963",
+  api_secret: "kmdKnzdNne3uEl_F5H8CntsneFU",
 });
 
 export const uploadToCloudinary = async (filePath, folder = "employees") => {
