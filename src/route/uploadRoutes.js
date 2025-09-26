@@ -36,12 +36,13 @@ router.get('/test-cloudinary', async (req, res) => {
 
 // POST /api/upload - Upload single image
 router.post('/', (req, res, next) => {
-  console.log('Upload route hit');
+  console.log('Upload route hit, headers:', req.headers['content-type']);
   upload.single('image')(req, res, (err) => {
     if (err) {
       console.error('Multer error:', err.message);
       return res.status(400).json({ error: err.message });
     }
+    console.log('File received:', req.file ? req.file.filename : 'No file');
     next();
   });
 }, uploadImage);

@@ -2,13 +2,14 @@ import path from "path";
 import cloudinary from "cloudinary";
 import fs from "fs";
 
+// Configure Cloudinary using environment variables
 cloudinary.v2.config({
-  cloud_name: "dgibkaebk",
-  api_key: "436467411714963",
-  api_secret: "kmdKnzdNne3uEl_F5H8CntsneFU",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadToCloudinary = async (filePath, folder = "employees") => {
+export const uploadToCloudinary = async (filePath, folder = "anvi-tiles") => {
   try {
     const ext = path.extname(filePath).toLowerCase();
 

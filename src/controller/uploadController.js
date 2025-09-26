@@ -2,18 +2,13 @@ const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
 
-// Configure Cloudinary - handle CLOUDINARY_URL
-if (process.env.CLOUDINARY_URL) {
-  cloudinary.config(process.env.CLOUDINARY_URL);
-  console.log('Cloudinary configured with URL');
-} else {
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
-  console.log('Cloudinary configured with individual vars');
-}
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+console.log('Cloudinary configured for uploads');
 
 // Configure multer for local storage as fallback
 const storage = multer.diskStorage({
@@ -56,18 +51,33 @@ const upload = multer({
 // Upload single image
 const uploadImage = async (req, res) => {
   try {
+    console.log('Upload request received');
+    
     if (!req.file) {
+      console.log('No file in request');
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'anvi-tiles'
+    console.log('File details:', {
+      filename: req.file.filename,
+      path: req.file.path,
+      size: req.file.size,
+      mimetype: req.file.mimetype
     });
+
+    console.log('Uploading to Cloudinary...');
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'anvi-tiles',
+      resource_type: 'auto'
+    });
+
+    console.log('Cloudinary upload successful:', result.public_id);
 
     // Delete local file
     const fs = require('fs');
     if (fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
+      console.log('Local file cleaned up');
     }
 
     res.json({
@@ -76,7 +86,11 @@ const uploadImage = async (req, res) => {
       publicId: result.public_id
     });
   } catch (error) {
-    console.error('Upload error:', error.message);
+    console.error('Upload error details:', {
+      message: error.message,
+      stack: error.stack,
+      file: req.file ? req.file.filename : 'No file'
+    });
     res.status(500).json({ error: error.message });
   }
 };
@@ -90,7 +104,8 @@ const uploadMultipleImages = async (req, res) => {
 
     const uploadPromises = req.files.map(file => 
       cloudinary.uploader.upload(file.path, {
-        folder: 'anvi-tiles'
+        folder: 'anvi-tiles',
+        resource_type: 'auto'
       })
     );
 
