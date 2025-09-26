@@ -108,6 +108,11 @@ const createProduct = async (req, res) => {
   try {
     const productData = { ...req.body };
     
+    // Ensure image field is properly set
+    if (productData.image && typeof productData.image === 'string') {
+      productData.image = productData.image.trim();
+    }
+    
     // Handle images array format for Cloudinary
     if (productData.images && Array.isArray(productData.images)) {
       productData.images = productData.images.map(img => {
@@ -118,10 +123,16 @@ const createProduct = async (req, res) => {
       });
     }
     
+    console.log('Creating product with data:', JSON.stringify(productData, null, 2));
+    
     const product = new Product(productData);
     await product.save();
+    
+    console.log('Product saved successfully:', product._id, 'Image URL:', product.image);
+    
     res.status(201).json(product);
   } catch (error) {
+    console.error('Product creation error:', error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -129,9 +140,18 @@ const createProduct = async (req, res) => {
 // Update product (admin)
 const updateProduct = async (req, res) => {
   try {
+    const updateData = { ...req.body };
+    
+    // Ensure image field is properly set
+    if (updateData.image && typeof updateData.image === 'string') {
+      updateData.image = updateData.image.trim();
+    }
+    
+    console.log('Updating product with data:', JSON.stringify(updateData, null, 2));
+    
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     
@@ -139,8 +159,11 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
     
+    console.log('Product updated successfully:', product._id, 'Image URL:', product.image);
+    
     res.json(product);
   } catch (error) {
+    console.error('Product update error:', error);
     res.status(400).json({ error: error.message });
   }
 };
