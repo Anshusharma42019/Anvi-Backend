@@ -102,8 +102,21 @@ app.get('/api/health', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  console.error('Error details:', {
+    message: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method
+  });
+  
+  // Don't send generic error for upload routes
+  if (req.url.includes('/upload')) {
+    return res.status(500).json({ error: err.message });
+  }
+  
+  res.status(500).json({ 
+    error: err.message || 'Something went wrong!'
+  });
 });
 
 // 404 handler

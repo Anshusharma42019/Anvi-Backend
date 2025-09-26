@@ -65,22 +65,33 @@ const getCatalogueImages = async (req, res) => {
 // Create new catalogue category
 const createCatalogueCategory = async (req, res) => {
   try {
-    const { category, catalogueNumber, imageUrl, description } = req.body;
+    console.log('Creating catalogue category with data:', req.body);
+    
+    const { category, catalogueNumber, imageUrl, imagePublicId, description } = req.body;
     
     if (!category || !catalogueNumber || !imageUrl) {
+      console.log('Missing required fields:', { category, catalogueNumber, imageUrl });
       return res.status(400).json({ error: 'Category, catalogue number, and image URL are required' });
     }
     
-    const catalogue = new Catalogue({ category, catalogueNumber, imageUrl, description });
+    const catalogue = new Catalogue({ 
+      category, 
+      catalogueNumber, 
+      imageUrl, 
+      imagePublicId,
+      description 
+    });
+    
+    console.log('Saving catalogue:', catalogue);
     await catalogue.save();
     
+    console.log('Catalogue saved successfully');
     res.status(201).json({ 
       message: 'Catalogue category created successfully',
-      category,
-      catalogueNumber,
-      imageUrl
+      catalogue
     });
   } catch (error) {
+    console.error('Error creating catalogue category:', error);
     if (error.code === 11000) {
       return res.status(400).json({ error: 'Category or catalogue number already exists' });
     }
@@ -92,11 +103,12 @@ const createCatalogueCategory = async (req, res) => {
 const updateCatalogueImage = async (req, res) => {
   try {
     const { category } = req.params;
-    const { catalogueNumber, imageUrl, description } = req.body;
+    const { catalogueNumber, imageUrl, imagePublicId, description } = req.body;
     
     const updateData = {};
     if (catalogueNumber) updateData.catalogueNumber = catalogueNumber;
     if (imageUrl) updateData.imageUrl = imageUrl;
+    if (imagePublicId) updateData.imagePublicId = imagePublicId;
     if (description !== undefined) updateData.description = description;
     
     const catalogue = await Catalogue.findOneAndUpdate(

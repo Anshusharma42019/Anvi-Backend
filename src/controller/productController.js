@@ -106,7 +106,19 @@ const getRecommendations = async (req, res) => {
 // Create new product (admin)
 const createProduct = async (req, res) => {
   try {
-    const product = new Product(req.body);
+    const productData = { ...req.body };
+    
+    // Handle images array format for Cloudinary
+    if (productData.images && Array.isArray(productData.images)) {
+      productData.images = productData.images.map(img => {
+        if (typeof img === 'string') {
+          return { url: img, publicId: '' };
+        }
+        return img;
+      });
+    }
+    
+    const product = new Product(productData);
     await product.save();
     res.status(201).json(product);
   } catch (error) {

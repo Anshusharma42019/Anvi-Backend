@@ -17,6 +17,9 @@ const catalogueSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  imagePublicId: {
+    type: String
+  },
   description: {
     type: String,
     default: ''
