@@ -18,6 +18,13 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request timeout middleware
+app.use((req, res, next) => {
+  req.setTimeout(30000); // 30 second timeout
+  res.setTimeout(30000);
+  next();
+});
+
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
 

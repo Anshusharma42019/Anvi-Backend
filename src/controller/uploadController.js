@@ -66,10 +66,16 @@ const uploadImage = async (req, res) => {
     });
 
     console.log('Uploading to Cloudinary...');
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'anvi-tiles',
-      resource_type: 'auto'
-    });
+    const result = await Promise.race([
+      cloudinary.uploader.upload(req.file.path, {
+        folder: 'anvi-tiles',
+        resource_type: 'auto',
+        timeout: 25000
+      }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Cloudinary upload timeout')), 25000)
+      )
+    ]);
 
     console.log('Cloudinary upload successful:', result.public_id);
 
