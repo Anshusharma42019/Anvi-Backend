@@ -10,7 +10,7 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://anvi-frontend-ne9l.vercel.app",
-    "http://anvi-backend-theta.vercel.app",
+    "https://anvi-backend-ten.vercel.app",
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   credentials: true
