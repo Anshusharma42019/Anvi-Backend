@@ -36,16 +36,6 @@ router.get('/test', (req, res) => {
   });
 });
 
-// Debug route
-router.all('*', (req, res) => {
-  res.status(404).json({ 
-    error: 'Upload route not found',
-    method: req.method,
-    path: req.path,
-    available: ['/test', '/', '/file', '/multiple', '/test-cloudinary']
-  });
-});
-
 // Test Cloudinary connection
 router.get('/test-cloudinary', async (req, res) => {
   try {
@@ -90,7 +80,7 @@ router.post('/file', upload.single('file'), async (req, res) => {
     const fs = require('fs');
     
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'anvi-tiles',
+      folder: 'anvi-tiles/products',
       resource_type: 'auto',
     });
 
@@ -99,6 +89,7 @@ router.post('/file', upload.single('file'), async (req, res) => {
 
     res.json({
       success: true,
+      imageUrl: result.secure_url,
       url: result.secure_url,
       publicId: result.public_id,
       message: 'File uploaded successfully'
@@ -142,6 +133,16 @@ router.post("/upload-file", fileUpload.single('file'), async (req, res) => {
     console.error('File upload error:', error);
     res.status(500).json({ error: 'Upload failed', message: error.message });
   }
+});
+
+// Debug route (must be last)
+router.all('*', (req, res) => {
+  res.status(404).json({ 
+    error: 'Upload route not found',
+    method: req.method,
+    path: req.path,
+    available: ['/test', '/', '/file', '/multiple', '/test-cloudinary']
+  });
 });
 
 module.exports = router;
