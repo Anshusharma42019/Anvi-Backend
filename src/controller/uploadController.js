@@ -98,7 +98,37 @@ const uploadImage = async (req, res) => {
       stack: error.stack,
       file: req.file ? req.file.filename : 'No file'
     });
-    res.status(500).json({ error: error.message });
+    
+    // Clean up local file if it exists
+    if (req.file && req.file.path) {
+      const fs = require('fs');
+      try {
+        if (fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+      } catch (cleanupError) {
+        console.error('File cleanup error:', cleanupError);
+      }
+    }
+    
+    let statusCode = 500;
+    let errorMessage = error.message;
+    
+    if (error.message.includes('timeout')) {
+      statusCode = 408;
+      errorMessage = 'Upload timeout - please try again';
+    } else if (error.message.includes('File too large')) {
+      statusCode = 413;
+      errorMessage = 'File too large - maximum size is 10MB';
+    } else if (error.message.includes('Invalid file type')) {
+      statusCode = 400;
+      errorMessage = 'Invalid file type - only images are allowed';
+    }
+    
+    res.status(statusCode).json({ 
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 
@@ -133,7 +163,25 @@ const uploadMultipleImages = async (req, res) => {
     });
   } catch (error) {
     console.error('Multiple upload error:', error);
-    res.status(500).json({ error: error.message });
+    
+    // Clean up local files if they exist
+    if (req.files && req.files.length > 0) {
+      const fs = require('fs');
+      req.files.forEach(file => {
+        try {
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+        } catch (cleanupError) {
+          console.error('File cleanup error:', cleanupError);
+        }
+      });
+    }
+    
+    res.status(500).json({ 
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 
