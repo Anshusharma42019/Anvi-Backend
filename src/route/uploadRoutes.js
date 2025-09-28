@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { upload, uploadImage, uploadMultipleImages, deleteImage } = require('../controller/uploadController');
 
+// Handle preflight OPTIONS requests
+router.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.sendStatus(200);
+});
+
 // Test endpoint
 router.get('/test', (req, res) => {
   res.json({ message: 'Upload endpoint working' });
