@@ -25,7 +25,25 @@ router.options('*', (req, res) => {
 
 // Test endpoint
 router.get('/test', (req, res) => {
-  res.json({ message: 'Upload endpoint working' });
+  res.json({ 
+    message: 'Upload endpoint working',
+    routes: {
+      'POST /': 'Upload single image',
+      'POST /file': 'Upload single file',
+      'POST /multiple': 'Upload multiple images',
+      'DELETE /:publicId': 'Delete image'
+    }
+  });
+});
+
+// Debug route
+router.all('*', (req, res) => {
+  res.status(404).json({ 
+    error: 'Upload route not found',
+    method: req.method,
+    path: req.path,
+    available: ['/test', '/', '/file', '/multiple', '/test-cloudinary']
+  });
 });
 
 // Test Cloudinary connection
@@ -61,7 +79,35 @@ router.post('/', upload.single('image'), uploadImage);
 // POST /api/upload/multiple - Upload multiple images
 router.post('/multiple', upload.array('images', 10), uploadMultipleImages);
 
-router.post("/file", upload.single('file'), uploadFile);
+// POST /api/upload/file - Upload single file (images, PDFs, docs)
+router.post('/file', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const cloudinary = require('cloudinary').v2;
+    const fs = require('fs');
+    
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'anvi-tiles',
+      resource_type: 'auto',
+    });
+
+    // Clean up temporary file
+    fs.unlinkSync(req.file.path);
+
+    res.json({
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      message: 'File uploaded successfully'
+    });
+  } catch (error) {
+    console.error('File upload error:', error);
+    res.status(500).json({ error: 'Upload failed', message: error.message });
+  }
+});
 
 // DELETE /api/upload/:publicId - Delete image
 router.delete('/:publicId', deleteImage);
