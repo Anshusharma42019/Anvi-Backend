@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { upload, uploadImage, uploadMultipleImages, deleteImage } = require('../controller/uploadController');
+const { upload, uploadImage, uploadMultipleImages, deleteImage, uploadFile } = require('../controller/uploadController');
 
 // Handle preflight OPTIONS requests
 router.options('*', (req, res) => {
@@ -57,6 +57,8 @@ router.post('/', (req, res, next) => {
 
 // POST /api/upload/multiple - Upload multiple images
 router.post('/multiple', upload.array('images', 10), uploadMultipleImages);
+
+router.post("/file", upload.single('file'), uploadFile);
 
 // DELETE /api/upload/:publicId - Delete image
 router.delete('/:publicId', deleteImage);

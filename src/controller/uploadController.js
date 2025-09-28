@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -150,7 +151,29 @@ const deleteImage = async (req, res) => {
   }
 };
 
+const uploadFile =async (req, res) => {
+  if (!req.file) {
+    return next(new ErrorHandler("No file uploaded.", 400));
+  }
+
+  // Upload to Cloudinary
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: 'user_profiles', // Optional: Organize in a folder
+    resource_type: 'image', // Assuming profile images; adjust if needed
+  });
+
+  // Delete temporary file
+  fs.unlinkSync(req.file.path);
+  res.status(200).json({
+    message: "File uploaded successfully to Cloudinary.",
+    url: result.secure_url,
+    publicId: result.public_id,
+  });
+
+};
+
 module.exports = {
+  uploadFile,
   upload,
   uploadImage,
   uploadMultipleImages,
